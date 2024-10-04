@@ -1,7 +1,10 @@
+from datetime import timedelta
+
 from celery import shared_task
 from django.utils import timezone
-from datetime import timedelta
+
 from habits.models import Habit
+
 from .telegram import send_telegram_message
 
 
@@ -16,7 +19,9 @@ def send_habit_reminders():
     time_in_30_minutes = current_time + timedelta(minutes=30)
 
     # Фильтруем привычки, которые нужно выполнить в ближайшие 30 минут
-    habits = Habit.objects.filter(time__gte=current_time.time(), time__lte=time_in_30_minutes.time()).order_by('time')
+    habits = Habit.objects.filter(
+        time__gte=current_time.time(), time__lte=time_in_30_minutes.time()
+    ).order_by("time")
 
     if not habits.exists():
         print("Нет привычек для напоминаний на ближайшие 30 минут")
