@@ -187,8 +187,10 @@ CELERY_BEAT_SCHEDULE = {
 #     "https://your-frontend-domain.com",  # Пример для продакшн-домена фронтенда
 # ]
 
-CORS_ALLOW_ALL_ORIGINS = True # Разрешаем доступ от всех источников
-CORS_ALLOW_CREDENTIALS = True # Разрешаем отправку кук (если требуется аутентификация через куки)
+CORS_ALLOW_ALL_ORIGINS = True  # Разрешаем доступ от всех источников
+CORS_ALLOW_CREDENTIALS = (
+    True  # Разрешаем отправку кук (если требуется аутентификация через куки)
+)
 # Разрешаем конкретные методы
 CORS_ALLOW_METHODS = [
     "GET",

@@ -1,4 +1,4 @@
-from rest_framework import generics, permissions, status, serializers
+from rest_framework import generics, permissions, serializers, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -16,7 +16,9 @@ class RegisterView(generics.CreateAPIView):
 
 # Представление для выхода (logout), которое деактивирует refresh токен
 class LogoutView(generics.GenericAPIView):
-    permission_classes = [AllowAny]  # Позволяем любому пользователю выходить (если у него есть refresh токен)
+    permission_classes = [
+        AllowAny
+    ]  # Позволяем любому пользователю выходить (если у него есть refresh токен)
     serializer_class = None
 
     # Добавим фейковый сериализатор для Swagger
@@ -25,7 +27,7 @@ class LogoutView(generics.GenericAPIView):
 
     def get_serializer_class(self):
         # Проверка для Swagger-документации
-        if getattr(self, 'swagger_fake_view', False):
+        if getattr(self, "swagger_fake_view", False):
             return self.FakeSerializer
         return None
 
@@ -34,7 +36,10 @@ class LogoutView(generics.GenericAPIView):
             # Проверяем наличие refresh токена в запросе
             refresh_token = request.data.get("refresh")
             if not refresh_token:
-                return Response({"detail": "Refresh token is missing."}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"detail": "Refresh token is missing."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
             # Деактивируем токен
             token = RefreshToken(refresh_token)
