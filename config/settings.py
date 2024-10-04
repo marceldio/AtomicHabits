@@ -3,7 +3,6 @@ from datetime import timedelta
 from pathlib import Path
 
 import environ
-from celery import Celery
 from celery.schedules import crontab
 from dotenv import load_dotenv
 
@@ -35,6 +34,7 @@ INSTALLED_APPS = [
     "django_celery_beat",
     "habits",
     "users",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -45,6 +45,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -117,14 +118,15 @@ AUTH_USER_MODEL = "users.User"
 
 REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-        'PAGE_SIZE': 5,  # Выводим по 5 привычек на страницу
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 5,  # Выводим по 5 привычек на страницу
 }
 
 SIMPLE_JWT = {
@@ -174,8 +176,27 @@ CACHES = {
 }
 
 CELERY_BEAT_SCHEDULE = {
-    "block_inactive_users": {
-        "task": "users.tasks.block_inactive_users",
-        "schedule": crontab(minute=0, hour=0),  # Запуск каждый день в полночь
+    "send_habit_reminders_every_five_minutes": {
+        "task": "habits.tasks.send_habit_reminders",  # Имя задачи
+        "schedule": crontab(minute="*/5"),  # Запуск задачи каждые 5 минут
     },
 }
+
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",  # Пример для локальной разработки фронтенда на React
+#     "https://your-frontend-domain.com",  # Пример для продакшн-домена фронтенда
+# ]
+
+CORS_ALLOW_ALL_ORIGINS = True  # Разрешаем доступ от всех источников
+CORS_ALLOW_CREDENTIALS = (
+    True  # Разрешаем отправку кук (если требуется аутентификация через куки)
+)
+# Разрешаем конкретные методы
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS",
+]

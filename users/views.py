@@ -1,15 +1,10 @@
-from rest_framework import generics, status
-from rest_framework.permissions import AllowAny
+from rest_framework import generics, permissions, serializers, status
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from users.models import User
 from users.serializers import RegisterSerializer, UserProfileSerializer
-
-from rest_framework import generics, permissions
-from rest_framework.permissions import IsAuthenticated
-
-
 
 
 # Представление для регистрации пользователя
@@ -21,21 +16,38 @@ class RegisterView(generics.CreateAPIView):
 
 # Представление для выхода (logout), которое деактивирует refresh токен
 class LogoutView(generics.GenericAPIView):
-    permission_classes = (
-        AllowAny,
-    )  # Позволяем любому пользователю выходить (если у него есть refresh токен)
+    permission_classes = [
+        AllowAny
+    ]  # Позволяем любому пользователю выходить (если у него есть refresh токен)
+    serializer_class = None
+
+    # Добавим фейковый сериализатор для Swagger
+    class FakeSerializer(serializers.Serializer):
+        pass
+
+    def get_serializer_class(self):
+        # Проверка для Swagger-документации
+        if getattr(self, "swagger_fake_view", False):
+            return self.FakeSerializer
+        return None
 
     def post(self, request):
         try:
-            # Получаем refresh токен из запроса
-            refresh_token = request.data["refresh"]
-            token = RefreshToken(refresh_token)
+            # Проверяем наличие refresh токена в запросе
+            refresh_token = request.data.get("refresh")
+            if not refresh_token:
+                return Response(
+                    {"detail": "Refresh token is missing."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
             # Деактивируем токен
+            token = RefreshToken(refresh_token)
             token.blacklist()
 
             return Response(status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 # Представление для редактирования профиля пользователя
@@ -47,4 +59,3 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         # Возвращаем текущего аутентифицированного пользователя
         return self.request.user
-
