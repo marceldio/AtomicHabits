@@ -17,5 +17,7 @@ urlpatterns = [
         name="token_obtain_pair",
     ),  # login/вход
     path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-    path('profile/', UserProfileView.as_view(), name='profile'),  # редактирование профиля
+    path(
+        "profile/", UserProfileView.as_view(), name="profile"
+    ),  # редактирование профиля
 ]
