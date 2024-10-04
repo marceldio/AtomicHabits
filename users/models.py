@@ -9,7 +9,13 @@ class User(AbstractUser):
     email = models.EmailField(unique=True, verbose_name="Email")
 
     phone = models.CharField(max_length=35, verbose_name="Телефон", **NULLABLE)
-    tg_name = models.CharField(max_length=50, verbose_name="Ник в Телеграм", **NULLABLE)
+
+    tg_name = models.CharField(max_length=50, verbose_name="Ник в Telegram", **NULLABLE)
+
+    chat_id = models.CharField(
+        max_length=50, verbose_name="Telegram Chat ID", **NULLABLE
+    )
+
     country = models.CharField(max_length=100, verbose_name="Страна", **NULLABLE)
     avatar = models.ImageField(
         upload_to="users/avatars/", verbose_name="Аватар", **NULLABLE

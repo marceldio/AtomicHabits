@@ -3,7 +3,6 @@ from datetime import timedelta
 from pathlib import Path
 
 import environ
-from celery import Celery
 from celery.schedules import crontab
 from dotenv import load_dotenv
 
@@ -123,8 +122,8 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
     ],
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-        'PAGE_SIZE': 5,  # Выводим по 5 привычек на страницу
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 5,  # Выводим по 5 привычек на страницу
 }
 
 SIMPLE_JWT = {
@@ -174,8 +173,8 @@ CACHES = {
 }
 
 CELERY_BEAT_SCHEDULE = {
-    "block_inactive_users": {
-        "task": "users.tasks.block_inactive_users",
-        "schedule": crontab(minute=0, hour=0),  # Запуск каждый день в полночь
+    "send_habit_reminders_every_five_minutes": {
+        "task": "habits.tasks.send_habit_reminders",  # Имя задачи
+        "schedule": crontab(minute="*/5"),  # Запуск задачи каждые 5 минут
     },
 }

@@ -13,7 +13,7 @@ class HabitListView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         # Фильтруем привычки только текущего пользователя
-        return Habit.objects.filter(user=self.request.user).order_by('id')
+        return Habit.objects.filter(user=self.request.user).order_by("id")
 
     def perform_create(self, serializer):
         # Привязываем новую привычку к текущему пользователю

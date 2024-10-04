@@ -1,15 +1,10 @@
-from rest_framework import generics, status
-from rest_framework.permissions import AllowAny
+from rest_framework import generics, permissions, status
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from users.models import User
 from users.serializers import RegisterSerializer, UserProfileSerializer
-
-from rest_framework import generics, permissions
-from rest_framework.permissions import IsAuthenticated
-
-
 
 
 # Представление для регистрации пользователя
@@ -47,4 +42,3 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         # Возвращаем текущего аутентифицированного пользователя
         return self.request.user
-
