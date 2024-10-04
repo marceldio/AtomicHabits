@@ -12,6 +12,9 @@ class HabitListView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        # Проверка для Swagger-документации
+        if getattr(self, 'swagger_fake_view', False):
+            return Habit.objects.none()
         # Фильтруем привычки только текущего пользователя
         return Habit.objects.filter(user=self.request.user).order_by("id")
 
@@ -27,5 +30,9 @@ class HabitDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        # Проверка для Swagger документации
+        if getattr(self, 'swagger_fake_view', False):
+            return Habit.objects.none()
+        # Для остальных случаев
         # Фильтруем привычки только текущего пользователя
         return Habit.objects.filter(user=self.request.user)
