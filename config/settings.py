@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "django_celery_beat",
     "habits",
     "users",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -44,6 +45,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -178,3 +180,20 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(minute="*/5"),  # Запуск задачи каждые 5 минут
     },
 }
+
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",  # Пример для локальной разработки фронтенда на React
+#     "https://your-frontend-domain.com",  # Пример для продакшн-домена фронтенда
+# ]
+
+CORS_ALLOW_ALL_ORIGINS = True # Разрешаем доступ от всех источников
+CORS_ALLOW_CREDENTIALS = True # Разрешаем отправку кук (если требуется аутентификация через куки)
+# Разрешаем конкретные методы
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS",
+]
