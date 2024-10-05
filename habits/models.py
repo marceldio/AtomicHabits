@@ -1,6 +1,5 @@
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils import timezone
 
 from users.models import User
 
@@ -36,13 +35,16 @@ class Habit(models.Model):
         if self.linked_habit and not self.linked_habit.is_pleasant:
             raise ValidationError("Связанная привычка должна быть приятной.")
 
-        # Валидация: у приятной привычки не может быть вознаграждения или связанных привычек
+        # Валидация: у приятной привычки не может быть вознаграждения или
+        # связанных привычек
         if self.is_pleasant and (self.reward or self.linked_habit):
             raise ValidationError(
-                "Приятная привычка не может иметь вознаграждения или связанных привычек."
+                "Приятная привычка не может иметь вознаграждения или "
+                "связанных привычек."
             )
 
-        # Валидация: периодичность выполнения не может быть реже одного раза в неделю (7 дней)
+        # Валидация: периодичность выполнения не может быть реже
+        # одного раза в неделю (7 дней)
         if self.period > 7:
             raise ValidationError(
                 "Периодичность выполнения не может быть реже одного раза в неделю."
