@@ -6,7 +6,6 @@ import environ
 from celery.schedules import crontab
 from dotenv import load_dotenv
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(BASE_DIR / ".env")
@@ -16,9 +15,6 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = os.getenv("DEBUG", False) == "True"
 
 ALLOWED_HOSTS = []
-
-
-# Application definition
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -82,7 +78,7 @@ DATABASES = {
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation."
-                "UserAttributeSimilarityValidator",
+        "UserAttributeSimilarityValidator",
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
@@ -95,10 +91,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
-
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "UTC"
@@ -108,10 +100,6 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = "static/"
-# STATICFILES_DIRS = (BASE_DIR / "static",)
-
-# MEDIA_URL = "media/"
-# MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -133,33 +121,34 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=55),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "USER_ID_FIELD": "email",
+    "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
 
-# Настройки для Celery:
-# URL-адрес брокера сообщений
+"""Настройки для Celery URL-адрес брокера сообщений"""
 CELERY_BROKER_URL = "redis://localhost:6379/0"
 
-# URL-адрес брокера результатов, также Redis
+"""URL-адрес брокера результатов, также Redis"""
 CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
 
-# Часовой пояс для работы Celery
+"""Часовой пояс для работы Celery"""
 CELERY_TIMEZONE = TIME_ZONE
 
-# Флаг отслеживания выполнения задач
+"""Флаг отслеживания выполнения задач"""
 CELERY_TASK_TRACK_STARTED = True
 
-# Максимальное время на выполнение задачи
+"""Максимальное время на выполнение задачи"""
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
-# Инициализация переменных окружения
+"""Инициализация переменных окружения"""
 env = environ.Env()
 environ.Env.read_env()
 
-# Настройки Redis
+"""Настройки Redis"""
 REDIS_HOST = env("REDIS_HOST")
 REDIS_PORT = env("REDIS_PORT")
 REDIS_DB = env("REDIS_DB")
@@ -183,16 +172,11 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000",  # Пример для локальной разработки фронтенда на React
-#     "https://your-frontend-domain.com",  # Пример для продакшн-домена фронтенда
-# ]
-
-CORS_ALLOW_ALL_ORIGINS = True  # Разрешаем доступ от всех источников
-CORS_ALLOW_CREDENTIALS = (
-    True  # Разрешаем отправку кук (если требуется аутентификация через куки)
-)
-# Разрешаем конкретные методы
+"""Разрешаем доступ от всех источников"""
+CORS_ALLOW_ALL_ORIGINS = True
+"""Разрешаем отправку кук (если требуется аутентификация через куки)"""
+CORS_ALLOW_CREDENTIALS = True
+"""Разрешаем конкретные методы"""
 CORS_ALLOW_METHODS = [
     "GET",
     "POST",

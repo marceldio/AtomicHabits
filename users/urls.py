@@ -9,7 +9,7 @@ from users.views import LogoutView, RegisterView, UserProfileView
 app_name = UsersConfig.name
 
 urlpatterns = [
-    path("register/", RegisterView.as_view(), name="register"),  # регистрация
+    path("register/", RegisterView.as_view(), name="register"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path(
         "token/",

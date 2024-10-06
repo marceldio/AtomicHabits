@@ -2,7 +2,7 @@ import os
 
 import requests
 
-# Загружаем токен Telegram-бота из переменных окружения
+"""Загружаем токен Telegram-бота из переменных окружения"""
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
 
@@ -13,17 +13,19 @@ def get_chat_id_from_tg_name(tg_name):
 
     if response.status_code == 200:
         data = response.json()
-        return data["result"]["id"]  # Возвращаем chat_id
+        """Возвращаем chat_id"""
+        return data["result"]["id"]
     else:
         print(f"Ошибка получения chat_id: {response.text}")
         return None
 
 
 def send_telegram_message(user, message):
-    if user.chat_id:  # Используем chat_id вместо tg_name
+    """Используем chat_id вместо tg_name"""
+    if user.chat_id:
         url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
         data = {
-            "chat_id": user.chat_id,  # Используем сохраненный chat_id
+            """Используем сохраненный chat_id""" "chat_id": user.chat_id,
             "text": message,
         }
         response = requests.post(url, data=data)

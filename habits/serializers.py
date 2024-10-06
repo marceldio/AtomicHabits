@@ -19,4 +19,5 @@ class HabitSerializer(serializers.ModelSerializer):
             "duration",
             "is_public",
         ]
-        read_only_fields = ["user"]  # Поле user должно быть только для чтения
+        """Поле user должно быть только для чтения"""
+        read_only_fields = ["user"]

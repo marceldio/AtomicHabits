@@ -44,17 +44,19 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    username_field = "email"  # Указываем email как поле для аутентификации
+    """Указываем email как поле для аутентификации"""
+
+    username_field = "email"
 
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        # Добавляем email в токен
+        """Добавляем email в токен"""
         token["email"] = user.email
         return token
 
     def validate(self, attrs):
-        # Переносим логику извлечения email и пароля
+        """Переносим логику извлечения email и пароля"""
         email = attrs.get("email")
         password = attrs.get("password")
 
@@ -64,7 +66,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             )
 
         try:
-            # Ищем пользователя по email
+            """Ищем пользователя по email"""
             user = User.objects.get(email=email)
         except User.DoesNotExist:
             raise serializers.ValidationError(
@@ -74,14 +76,16 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         if not user.check_password(password):
             raise serializers.ValidationError({"password": "Неправильный пароль."})
 
-        # Передаем данные дальше для создания токена
-        attrs["username"] = user.email  # Передаем email как username
+        """Передаем данные дальше для создания токена
+            Передаем email как username"""
+        attrs["username"] = user.email
         return super().validate(attrs)
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
+        """Поля, которые можно редактировать"""
         fields = [
             "email",
             "phone",
@@ -89,4 +93,4 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "chat_id",
             "country",
             "avatar",
-        ]  # Поля, которые можно редактировать
+        ]

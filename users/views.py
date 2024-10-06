@@ -6,34 +6,38 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from users.models import User
 from users.serializers import RegisterSerializer, UserProfileSerializer
 
+"""Представление для регистрации пользователя"""
 
-# Представление для регистрации пользователя
+
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
 
 
-# Представление для выхода (logout), которое деактивирует refresh токен
+"""Представление для выхода (logout), которое деактивирует refresh токен"""
+
+
 class LogoutView(generics.GenericAPIView):
-    permission_classes = [
-        AllowAny
-    ]  # Позволяем любому пользователю выходить (если у него есть refresh токен)
+    """Позволяем любому пользователю выходить (если у него есть refresh токен)"""
+
+    permission_classes = [AllowAny]
     serializer_class = None
 
-    # Добавим фейковый сериализатор для Swagger
+    """Добавим фейковый сериализатор для Swagger"""
+
     class FakeSerializer(serializers.Serializer):
         pass
 
     def get_serializer_class(self):
-        # Проверка для Swagger-документации
+        """Проверка для Swagger-документации"""
         if getattr(self, "swagger_fake_view", False):
             return self.FakeSerializer
         return None
 
     def post(self, request):
         try:
-            # Проверяем наличие refresh токена в запросе
+            """Проверяем наличие refresh токена в запросе"""
             refresh_token = request.data.get("refresh")
             if not refresh_token:
                 return Response(
@@ -41,7 +45,7 @@ class LogoutView(generics.GenericAPIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            # Деактивируем токен
+            """Деактивируем токен"""
             token = RefreshToken(refresh_token)
             token.blacklist()
 
@@ -50,12 +54,14 @@ class LogoutView(generics.GenericAPIView):
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Представление для редактирования профиля пользователя
+"""Представление для редактирования профиля пользователя"""
+
+
 class UserProfileView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = UserProfileSerializer
 
     def get_object(self):
-        # Возвращаем текущего аутентифицированного пользователя
+        """Возвращаем текущего аутентифицированного пользователя"""
         return self.request.user
