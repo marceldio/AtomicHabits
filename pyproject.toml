@@ -32,6 +32,10 @@ django-cors-headers = "^4.4.0"
 black = "^23.1.0"
 isort = "^5.10.1"
 
+
+[tool.poetry.group.dev.dependencies]
+coverage = "^7.6.1"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
