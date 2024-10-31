@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "8001:8000"
+    entrypoint: ["sh", "-c", "until nc -z db 5432; do echo 'Waiting for DB...'; sleep 1; done; python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6381:6379"
+
+  celery:
+    build: .
+    depends_on:
+      - redis
+      - db
+    command: celery -A config worker --loglevel=info
+
+  celery-beat:
+    build: .
+    depends_on:
+      - redis
+      - db
+    command: celery -A config beat --loglevel=info
+
+volumes:
+  postgres_data:
