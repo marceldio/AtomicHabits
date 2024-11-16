@@ -1,5 +1,5 @@
 Atomic habits by Marcel Dio
-# atomic_habits
+# Atomic Habits
 Приложение: Трекер полезных привычек.
 
 Контекст
